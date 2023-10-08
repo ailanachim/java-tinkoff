@@ -21,8 +21,8 @@ public class HangmanTest {
     void failedGuess() throws FileNotFoundException {
         Word word = new Word();
 
-        Character c = 'a';
-        while (word.getWord().contains(c.toString())) {
+        char c = 'a';
+        while (word.getWord().contains(Character.toString(c))) {
             c++;
         }
 
@@ -34,7 +34,7 @@ public class HangmanTest {
 
         do {
             c++;
-        } while (word.getWord().contains(c.toString()));
+        } while (word.getWord().contains(Character.toString(c)));
 
         assertThat(word.guessLetter(c)).isFalse();
         assertThat(word.getMistakes()).isEqualTo(2);
