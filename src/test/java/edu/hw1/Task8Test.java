@@ -6,6 +6,11 @@ import static edu.hw1.Task8.knightBoardCapture;
 
 public class Task8Test {
 
+    @Test void nullTest() {
+        assertThat(knightBoardCapture(null)).isFalse();
+        assertThat(knightBoardCapture(new int[][] {})).isTrue();
+    }
+
     @Test void emptyBoardTest() {
         int[][] board = {
             {0, 0, 0, 0, 0, 0, 0, 0},

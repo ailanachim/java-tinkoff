@@ -2,33 +2,44 @@ package edu.hw1;
 
 class Task1 {
 
+    private static final int SECONDS_PER_MINUTE = 60;
+
     private Task1() {
     }
 
     public static int minutesToSeconds(String time) {
+        if (!validTime(time)) {
+            return -1;
+        }
         String[] strings = time.split(":");
-        if (strings.length != 2) {
-            return -1;
+        int seconds = Integer.parseInt(strings[1]);
+        int minutes = Integer.parseInt(strings[0]);
+
+        return minutes * SECONDS_PER_MINUTE + seconds;
+    }
+
+    private static boolean validTime(String time) {
+        if (time == null) {
+            return false;
         }
 
-        int seconds;
-        int minutes;
+        int delimiterIndex = -1;
+        final char delimiter = ':';
 
-        try {
-            seconds = Integer.parseInt(strings[1]);
-            minutes = Integer.parseInt(strings[0]);
-        } catch (NumberFormatException exception) {
-            return -1;
+        for (int i = 0; i < time.length(); i++) {
+            if (time.charAt(i) == delimiter && delimiterIndex == -1) {
+                delimiterIndex = i;
+            } else if (!Character.isDigit(time.charAt(i))) {
+                return false;
+            }
         }
 
-        final int secondsPerMinute = 60;
-
-        if (seconds >= secondsPerMinute) {
-            return -1;
+        if (delimiterIndex <= 0 && delimiterIndex >= time.length() - 1) {
+            return false;
         }
 
-        seconds += minutes * secondsPerMinute;
-        return seconds;
+        int seconds = Integer.parseInt(time.substring(delimiterIndex + 1));
+        return seconds < SECONDS_PER_MINUTE;
     }
 
 }

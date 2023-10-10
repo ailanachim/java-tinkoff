@@ -7,6 +7,7 @@ import static edu.hw1.Task4.fixString;
 public class Task4Test {
 
     @Test void fixStringTest() {
+        assertThat(fixString(null)).isEqualTo(null);
         assertThat(fixString("")).isEqualTo("");
         assertThat(fixString("123456")).isEqualTo("214365");
         assertThat(fixString("1234567")).isEqualTo("2143657");

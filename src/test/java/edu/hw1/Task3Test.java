@@ -14,7 +14,9 @@ public class Task3Test {
 
         assertThat(isNestable(a, a)).isFalse();
         assertThat(isNestable(a, b)).isFalse();
+        assertThat(isNestable(null, b)).isFalse();
         assertThat(isNestable(c, a)).isFalse();
+        assertThat(isNestable(c, null)).isFalse();
 
         assertThat(isNestable(b, c)).isTrue();
         assertThat(isNestable(c, b)).isFalse();

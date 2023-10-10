@@ -7,10 +7,14 @@ import static edu.hw1.Task1.minutesToSeconds;
 public class Task1Test {
 
     @Test void incorrectFormatTest() {
+        assertThat(minutesToSeconds(null)).isEqualTo(-1);
         assertThat(minutesToSeconds("")).isEqualTo(-1);
         assertThat(minutesToSeconds("blabla")).isEqualTo(-1);
+        assertThat(minutesToSeconds("bla:bla")).isEqualTo(-1);
+        assertThat(minutesToSeconds("12a:81")).isEqualTo(-1);
         assertThat(minutesToSeconds("123")).isEqualTo(-1);
         assertThat(minutesToSeconds("18.23")).isEqualTo(-1);
+        assertThat(minutesToSeconds("17-30")).isEqualTo(-1);
         assertThat(minutesToSeconds("12:30:47")).isEqualTo(-1);
         assertThat(minutesToSeconds("12:60")).isEqualTo(-1);
     }

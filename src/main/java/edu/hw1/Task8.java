@@ -5,9 +5,15 @@ public class Task8 {
     private Task8() {
     }
 
-    @SuppressWarnings("MagicNumber")
     public static boolean knightBoardCapture(int[][] field) {
-        int[][] knightTargetSquares = {{-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}, {1, 2}, {2, 1}, {2, -1}, {1, -2}};
+        if (field == null) {
+            return false;
+        }
+
+        final int dx = 2;
+        final int dy = 1;
+        int[][] knightTargetSquares =
+            {{-dx, -dy}, {-dy, -dx}, {dx, -dy}, {dy, -dx}, {-dx, dy}, {-dy, dx}, {dx, dy}, {dy, dx}};
 
         for (int i = 0; i < field.length; i++) {
             for (int j = 0; j < field[i].length; j++) {

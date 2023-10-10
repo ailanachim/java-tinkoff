@@ -6,7 +6,7 @@ public class Task3 {
     }
 
     public static boolean isNestable(int[] a1, int[] a2) {
-        if (a1.length == 0 || a2.length == 0) {
+        if (a1 == null || a2 == null || a1.length == 0 || a2.length == 0) {
             return false;
         }
 

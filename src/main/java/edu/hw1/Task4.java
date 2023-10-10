@@ -6,6 +6,10 @@ public class Task4 {
     }
 
     public static String fixString(String string) {
+        if (string == null) {
+            return null;
+        }
+
         char[] chars = string.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             if (i % 2 == 1) {
