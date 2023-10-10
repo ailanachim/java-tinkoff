@@ -12,6 +12,9 @@ class Task1 {
             return -1;
         }
         String[] strings = time.split(":");
+
+
+
         int seconds = Integer.parseInt(strings[1]);
         int minutes = Integer.parseInt(strings[0]);
 
