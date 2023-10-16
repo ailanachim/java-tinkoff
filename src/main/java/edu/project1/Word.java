@@ -1,33 +1,20 @@
 package edu.project1;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Scanner;
-
 public class Word {
 
     private final String word;
     private final boolean[] guessed;
     private int mistakes;
-    final int alphabet = 26;
-    private final boolean[] used;
+    private static final int MAX_MISTAKES = 10;
+    private static final int ALPHABET = 26;
+    private final boolean[] used = new boolean[ALPHABET];
 
-    public Word() throws FileNotFoundException {
-        ArrayList<String> dictionary = new ArrayList<>();
-        Scanner scanner = new Scanner(new File("src/main/java/edu/project1/dictionary.txt"));
-        while (scanner.hasNext()) {
-            dictionary.add(scanner.next());
-        }
-        scanner.close();
-
-        int index = (int) (Math.random() * dictionary.size());
-        word = dictionary.get(index);
+    public Word(String word) {
+        this.word = word;
         guessed = new boolean[word.length()];
-        used = new boolean[alphabet];
     }
 
-    public boolean guessLetter(char letter) {
+    public GuessResult guessLetter(char letter) {
         boolean letterExist = false;
         for (int i = 0; i < word.length(); i++) {
             if (word.charAt(i) == letter) {
@@ -40,7 +27,19 @@ public class Word {
             mistakes++;
         }
         used[letter - 'a'] = true;
-        return letterExist;
+
+        if (letterExist) {
+            if (isGuessed()) {
+                return GuessResult.Win;
+            }
+            return GuessResult.Success;
+        } else {
+            if (mistakes > MAX_MISTAKES) {
+                return GuessResult.Defeat;
+            } else {
+                return GuessResult.Fail;
+            }
+        }
     }
 
     public String wordState() {
@@ -62,6 +61,10 @@ public class Word {
 
     public int getMistakes() {
         return mistakes;
+    }
+
+    public int maxMistakes() {
+        return MAX_MISTAKES;
     }
 
     public boolean isGuessed() {
