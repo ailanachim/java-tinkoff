@@ -10,6 +10,9 @@ public class Word {
     private final boolean[] used = new boolean[ALPHABET];
 
     public Word(String word) {
+        if (word == null || word.isEmpty()) {
+            throw new IllegalArgumentException("Word cannot be null or empty");
+        }
         this.word = word;
         guessed = new boolean[word.length()];
     }
