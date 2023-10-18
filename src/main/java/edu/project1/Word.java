@@ -3,29 +3,20 @@ package edu.project1;
 public class Word {
 
     private final String word;
-    private final boolean[] guessed;
     private int mistakes;
     private static final int MAX_MISTAKES = 10;
     private static final int ALPHABET = 26;
     private final boolean[] used = new boolean[ALPHABET];
 
     public Word(String word) {
-        if (word == null || word.isEmpty()) {
-            throw new IllegalArgumentException("Word cannot be null or empty");
+        if (!validWord(word)) {
+            throw new IllegalArgumentException("word must contain lowercase latin characters");
         }
         this.word = word;
-        guessed = new boolean[word.length()];
     }
 
     public GuessResult guessLetter(char letter) {
-        boolean letterExist = false;
-        for (int i = 0; i < word.length(); i++) {
-            if (word.charAt(i) == letter) {
-                guessed[i] = true;
-                letterExist = true;
-            }
-        }
-
+        boolean letterExist = word.contains(Character.toString(letter));
         if (!letterExist && !used[letter - 'a']) {
             mistakes++;
         }
@@ -33,23 +24,23 @@ public class Word {
 
         if (letterExist) {
             if (isGuessed()) {
-                return GuessResult.Win;
+                return new GuessResult.Win(word);
             }
-            return GuessResult.Success;
+            return new GuessResult.SuccessGuess(wordState());
         } else {
             if (mistakes > MAX_MISTAKES) {
-                return GuessResult.Defeat;
+                return new GuessResult.Defeat(word);
             } else {
-                return GuessResult.Fail;
+                return new GuessResult.FailedGuess(wordState(), mistakes, MAX_MISTAKES);
             }
         }
     }
 
     public String wordState() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < word.length(); i++) {
-            if (guessed[i]) {
-                stringBuilder.append(word.charAt(i));
+        for (char c : word.toCharArray()) {
+            if (used[c - 'a']) {
+                stringBuilder.append(c);
             } else {
                 stringBuilder.append('*');
             }
@@ -71,8 +62,25 @@ public class Word {
     }
 
     public boolean isGuessed() {
-        for (boolean b : guessed) {
-            if (!b) {
+        for (char c : word.toCharArray()) {
+            if (!used[c - 'a']) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean isFinalState() {
+        return isGuessed() || mistakes > MAX_MISTAKES;
+    }
+
+    private boolean validWord(String word) {
+        if (word == null || word.isEmpty()) {
+            return false;
+        }
+        for (char c : word.toCharArray()) {
+            if (c > 'z' || c < 'a') {
                 return false;
             }
         }

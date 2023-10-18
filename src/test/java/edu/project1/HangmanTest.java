@@ -2,43 +2,50 @@ package edu.project1;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.StringBufferInputStream;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class HangmanTest {
-
     @Test
-    void successGuess() {
-        Word word = new Word("people");
+    void winGameTest() {
+        String word = "abc";
+        HangmanGame game = new HangmanGame(word);
 
-        assertThat(word.guessLetter('o')).isEqualTo(GuessResult.Success);
-        assertThat(word.guessLetter('e')).isEqualTo(GuessResult.Success);
-        assertThat(word.guessLetter('p')).isEqualTo(GuessResult.Success);
-        assertThat(word.guessLetter('l')).isEqualTo(GuessResult.Win);
+        String input = "a\nb\nc";
+        StringBufferInputStream inputStream = new StringBufferInputStream(input);
+        System.setIn(inputStream);
+
+        game.run();
     }
 
     @Test
-    void failedGuess() {
-        Word word = new Word("ocean");
+    void defeatGameTest() {
+        String word = "a";
+        HangmanGame game = new HangmanGame(word);
 
-        assertThat(word.guessLetter('b')).isEqualTo(GuessResult.Fail);
-        assertThat(word.getMistakes()).isEqualTo(1);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (char c = 'b'; c <= 'z'; c++) {
+            stringBuilder.append(c);
+            stringBuilder.append('\n');
+        }
 
-        assertThat(word.guessLetter('d')).isEqualTo(GuessResult.Fail);
-        assertThat(word.getMistakes()).isEqualTo(2);
+        String input = stringBuilder.toString();
+        StringBufferInputStream inputStream = new StringBufferInputStream(input);
+        System.setIn(inputStream);
 
-        assertThat(word.guessLetter('d')).isEqualTo(GuessResult.Fail);
-        assertThat(word.getMistakes()).isEqualTo(2);
+        game.run();
+    }
 
-        assertThat(word.guessLetter('f')).isEqualTo(GuessResult.Fail);
-        assertThat(word.guessLetter('g')).isEqualTo(GuessResult.Fail);
-        assertThat(word.guessLetter('h')).isEqualTo(GuessResult.Fail);
-        assertThat(word.guessLetter('i')).isEqualTo(GuessResult.Fail);
-        assertThat(word.guessLetter('j')).isEqualTo(GuessResult.Fail);
-        assertThat(word.guessLetter('k')).isEqualTo(GuessResult.Fail);
-        assertThat(word.guessLetter('l')).isEqualTo(GuessResult.Fail);
-        assertThat(word.guessLetter('m')).isEqualTo(GuessResult.Fail);
+    @Test
+    void exitTest() {
+        String word = "a";
+        HangmanGame game = new HangmanGame(word);
 
-        assertThat(word.getMistakes()).isEqualTo(word.maxMistakes());
-        assertThat(word.guessLetter('p')).isEqualTo(GuessResult.Defeat);
+        String input = "exit";
+        StringBufferInputStream inputStream = new StringBufferInputStream(input);
+        System.setIn(inputStream);
+
+        game.run();
     }
 }

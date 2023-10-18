@@ -16,9 +16,9 @@ public class HangmanGame {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Загадано слово: " + word.wordState());
 
-        while (true) {
+        while (!word.isFinalState()) {
             System.out.println("Введите букву:");
-            String input = scanner.nextLine();
+            String input = scanner.nextLine().strip().toLowerCase();
 
             if (Objects.equals(input, EXIT_COMMAND)) {
                 System.out.println("Выход из игры. Загаданное слово было: " + word.getWord());
@@ -31,19 +31,7 @@ public class HangmanGame {
             }
 
             GuessResult guessResult = word.guessLetter(input.charAt(0));
-            if (guessResult == GuessResult.Win) {
-                System.out.println("Ура, Вы отгадали слово! Загаданное слово: " + word.getWord());
-                break;
-            } else if (guessResult == GuessResult.Defeat) {
-                System.out.println("Вы проиграли, загаданное слово было: " + word.getWord());
-                break;
-            } else if (guessResult == GuessResult.Success) {
-                System.out.println("Верно! Текущее слово:" + word.wordState());
-            } else if (guessResult == GuessResult.Fail) {
-                System.out.printf("К сожалению, такой буквы нет. Неудачных попыток %d из %d\n",
-                        word.getMistakes(), word.maxMistakes());
-                System.out.println("Текущее слово:" + word.wordState());
-            }
+            System.out.println(guessResult.message());
         }
     }
 }
