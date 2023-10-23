@@ -14,19 +14,7 @@ public final class PopularCommandExecutor {
     }
 
     void tryExecute(String command) {
-        for (int i = 0; i < maxAttempts; i++) {
-            try (Connection connection = manager.getConnection()) {
-
-                connection.execute(command);
-                break;
-
-            } catch (Exception e) {
-
-                if (i == maxAttempts - 1) {
-                    throw new ConnectionException(e);
-                }
-
-            }
-        }
+        var executor = new CommandExecutor(manager, maxAttempts);
+        executor.tryExecute(command);
     }
 }

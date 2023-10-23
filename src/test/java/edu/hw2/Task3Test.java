@@ -10,9 +10,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 public class Task3Test {
 
     void useConnection(Connection connection) throws Exception {
-        for (int i = 0; i < 10; i++) {
-            connection.execute("command");
-        }
+        connection.execute("command");
         connection.close();
     }
 
@@ -27,41 +25,42 @@ public class Task3Test {
     @Test void defaultConnectionManagerTest() {
         var manager = new DefaultConnectionManager();
 
-        for (int i = 0; i < 10; i++) {
-            assertThat(manager.getConnection()).isInstanceOfAny(StableConnection.class, FaultyConnection.class);
-        }
+        assertThat(manager.getConnection()).isInstanceOf(FaultyConnection.class);
+        assertThat(manager.getConnection()).isInstanceOf(StableConnection.class);
+        assertThat(manager.getConnection()).isInstanceOf(StableConnection.class);
+        assertThat(manager.getConnection()).isInstanceOf(StableConnection.class);
+        assertThat(manager.getConnection()).isInstanceOf(StableConnection.class);
     }
 
     @Test void faultyConnectionManagerTest() {
         var manager = new FaultyConnectionManager();
 
-        for (int i = 0; i < 10; i++) {
-            assertThat(manager.getConnection()).isInstanceOf(FaultyConnection.class);
-        }
+        assertThat(manager.getConnection()).isInstanceOf(FaultyConnection.class);
     }
 
     @Test
-    @DisplayName("Using DefaultConnectionManager")
+    @DisplayName("Using DefaultConnectionManager with one attempt")
     void popularCommandExecutorTest1() {
+        var executor = new PopularCommandExecutor(new DefaultConnectionManager(), 1);
+
+        assertThatThrownBy(executor::updatePackages).isInstanceOf(ExceededAttemptsNumberException.class)
+            .hasCauseInstanceOf(ConnectionException.class);
+    }
+
+    @Test
+    @DisplayName("Using DefaultConnectionManager with many attempts")
+    void popularCommandExecutorTest2() {
         var executor = new PopularCommandExecutor(new DefaultConnectionManager(), 10);
 
-        for (int i = 0; i < 100; i++) {
-            assertThatNoException().isThrownBy(executor::updatePackages);
-        }
+        assertThatNoException().isThrownBy(executor::updatePackages);
     }
 
     @Test
     @DisplayName("Using FaultyConnectionManager")
-    void popularCommandExecutorTest2() {
-        var executor = new PopularCommandExecutor(new FaultyConnectionManager(), 2);
+    void popularCommandExecutorTest3() {
+        var executor = new PopularCommandExecutor(new FaultyConnectionManager(), 10);
 
-        for (int i = 0; i < 100; i++) {
-            try {
-                executor.updatePackages();
-            } catch (Exception exception) {
-                assertThat(exception).isInstanceOf(ConnectionException.class);
-                assertThat(exception).hasCauseInstanceOf(ConnectionException.class);
-            }
-        }
+        assertThatThrownBy(executor::updatePackages).isInstanceOf(ExceededAttemptsNumberException.class);
+        assertThatThrownBy(executor::updatePackages).hasCauseInstanceOf(ConnectionException.class);
     }
 }

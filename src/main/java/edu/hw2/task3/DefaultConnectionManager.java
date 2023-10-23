@@ -2,10 +2,12 @@ package edu.hw2.task3;
 
 public class DefaultConnectionManager implements ConnectionManager {
 
-    private final static double FAULT_PROBABILITY = 0.2;
+    private static final int FREQUENCY = 5;
+    private int index = -1;
 
     @Override public Connection getConnection() {
-        if (Math.random() <= FAULT_PROBABILITY) {
+        index = (index + 1) % FREQUENCY;
+        if (index == 0) {
             return new FaultyConnection();
         }
         return new StableConnection();

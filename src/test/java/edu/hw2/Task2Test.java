@@ -1,29 +1,25 @@
 package edu.hw2;
 
-import org.junit.jupiter.api.Test;
 import edu.hw2.task2.Rectangle;
 import edu.hw2.task2.Square;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class Task2Test {
 
-    @Test void rectangleTest() {
-        var rect1 = new Rectangle(10, 20);
-        var rect2 = new Rectangle(5, 3);
-        var rect3 = new Rectangle(4, 6);
-
-        assertThat(rect1.area()).isEqualTo(200);
-        assertThat(rect2.area()).isEqualTo(15);
-        assertThat(rect3.area()).isEqualTo(24);
+    static Arguments[] rectangles() {
+        return new Arguments[] {
+            Arguments.of(new Rectangle()),
+            Arguments.of(new Square())};
     }
 
-    @Test void squareTest() {
-        var square1 = new Square(10);
-        var square2 = new Square(3);
-        var square3 = new Square(1);
+    @ParameterizedTest
+    @MethodSource("rectangles")
+    void rectangleArea(Rectangle rect) {
+        var rect1 = rect.setWidth(20).setHeight(10);
 
-        assertThat(square1.area()).isEqualTo(100);
-        assertThat(square2.area()).isEqualTo(9);
-        assertThat(square3.area()).isEqualTo(1);
+        assertThat(rect1.area()).isEqualTo(200.0);
     }
 }
