@@ -14,11 +14,7 @@ public class Task3 {
 
         Map<T, Integer> dict = new TreeMap<>();
         for (T obj : objects) {
-            if (dict.containsKey(obj)) {
-                dict.put(obj, dict.get(obj) + 1);
-            } else {
-                dict.put(obj, 1);
-            }
+            dict.put(obj, dict.getOrDefault(obj, 0) + 1);
         }
 
         return dict;

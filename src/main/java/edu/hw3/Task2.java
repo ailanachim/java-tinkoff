@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Task2 {
+    final static char OPEN_BRACKET = '(';
+    final static char CLOSE_BRACKET = ')';
+
     private Task2() {
     }
 
     public static String[] clusterize(String brackets) {
-        if (!isValid(brackets)) {
+        if (notValid(brackets)) {
             throw new IllegalArgumentException();
         }
 
@@ -20,7 +23,7 @@ public class Task2 {
         for (int i = 0; i < brackets.length(); i++) {
             char c = brackets.charAt(i);
 
-            if (c == '(') {
+            if (c == OPEN_BRACKET) {
                 k += 1;
             } else {
                 k -= 1;
@@ -35,25 +38,25 @@ public class Task2 {
         return clusters.toArray(String[]::new);
     }
 
-    private static boolean isValid(String brackets) {
+    private static boolean notValid(String brackets) {
         if (brackets == null) {
-            return false;
+            return true;
         }
 
         int k = 0;
         for (char c : brackets.toCharArray()) {
-            if (c == '(') {
+            if (c == OPEN_BRACKET) {
                 k += 1;
-            } else if (c == ')') {
+            } else if (c == CLOSE_BRACKET) {
                 k -= 1;
                 if (k < 0) {
-                    return false;
+                    return true;
                 }
             } else {
-                return false;
+                return true;
             }
         }
 
-        return k == 0;
+        return k != 0;
     }
 }

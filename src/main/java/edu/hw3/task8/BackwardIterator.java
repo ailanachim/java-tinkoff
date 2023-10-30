@@ -2,23 +2,22 @@ package edu.hw3.task8;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class BackwardIterator<E> implements Iterator<E> {
-    private final List<E> collection;
-    int cursor;
+    ListIterator<E> iterator;
 
     public BackwardIterator(List<E> list) {
-        collection = list;
-        cursor = list.size() - 1;
+        iterator = list.listIterator(list.size());
     }
 
     @Override
     public boolean hasNext() {
-        return cursor > 0;
+        return iterator.hasPrevious();
     }
 
     @Override
     public E next() {
-        return collection.get(cursor--);
+        return iterator.previous();
     }
 }

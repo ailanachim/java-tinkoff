@@ -2,10 +2,11 @@ package edu.hw3.task6;
 
 import java.util.Collections;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class PriorityStockMarket implements StockMarket {
 
-    private final PriorityQueue<Stock> stocks = new PriorityQueue<>(Collections.reverseOrder());
+    private final Queue<Stock> stocks = new PriorityQueue<>(Collections.reverseOrder());
 
     @Override
     public void add(Stock stock) {
