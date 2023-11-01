@@ -1,0 +1,28 @@
+package edu.project2;
+
+public record Coordinate(int row, int col) {
+
+    public Coordinate {
+        if (row < 0 || col < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public boolean isNear(Coordinate other) {
+        return ((row() - other.row()) * (row() - other.row())
+            + (col() - other.col()) * (col() - other.col())) == 1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Coordinate other) {
+            return row == other.row && col == other.col;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return row ^ col;
+    }
+}
