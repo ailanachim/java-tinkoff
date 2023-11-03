@@ -60,7 +60,7 @@ public class KruskalGenerator implements Generator {
 
         Coordinate end = new Coordinate(x2, y2);
 
-        return new Maze(height, width, grid, start, end);
+        return new Maze(grid, start, end);
     }
 
     private boolean canMakePassage(int x, int y) {

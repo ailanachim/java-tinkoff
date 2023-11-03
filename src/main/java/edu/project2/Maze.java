@@ -1,19 +1,15 @@
 package edu.project2;
 
 public class Maze {
-    private final int height;
-    private final int width;
     private final Cell[][] grid;
     private final Coordinate start;
     private final Coordinate end;
 
-    public Maze(int height, int width, Cell[][] grid, Coordinate start, Coordinate end) {
-        if (notValidArgs(height, width, grid, start, end)) {
+    public Maze(Cell[][] grid, Coordinate start, Coordinate end) {
+        if (notValidArgs(grid, start, end)) {
             throw new IllegalArgumentException();
         }
 
-        this.height = height;
-        this.width = width;
         this.start = start;
         this.end = end;
         this.grid = grid;
@@ -24,17 +20,18 @@ public class Maze {
             throw new IllegalArgumentException();
         }
 
-        this.height = maze.height;
-        this.width = maze.width;
         this.start = maze.start;
         this.end = maze.end;
         this.grid = maze.grid;
     }
 
-    private boolean notValidArgs(int height, int width, Cell[][] grid, Coordinate start, Coordinate end) {
-        if (grid == null || grid.length != height) {
+    private boolean notValidArgs(Cell[][] grid, Coordinate start, Coordinate end) {
+        if (grid == null || grid.length == 0) {
             return true;
         }
+
+        int height = grid.length;
+        int width = grid[0].length;
 
         for (Cell[] row : grid) {
             if (row.length != width) {
@@ -60,11 +57,11 @@ public class Maze {
     }
 
     public int height() {
-        return height;
+        return grid.length;
     }
 
     public int width() {
-        return width;
+        return grid[0].length;
     }
 
     public Cell get(int x, int y) {

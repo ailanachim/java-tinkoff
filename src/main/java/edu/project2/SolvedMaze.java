@@ -11,8 +11,8 @@ public final class SolvedMaze extends Maze {
             throw new IllegalArgumentException();
         }
 
-        if (path.iterator().next() != maze.start()
-            || path.iterator(path.length()).previous() != maze.end()) {
+        if (!path.iterator().next().equals(maze.start())
+            || !path.iterator(path.length()).previous().equals(maze.end())) {
             throw new IllegalArgumentException();
         }
 

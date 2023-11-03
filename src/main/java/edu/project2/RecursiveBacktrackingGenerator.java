@@ -38,7 +38,7 @@ public class RecursiveBacktrackingGenerator implements Generator {
 
         Coordinate end = new Coordinate(x2, y2);
 
-        return new Maze(height, width, grid, start, end);
+        return new Maze(grid, start, end);
     }
 
     private void makePassage(Cell[][] grid, int x, int y) {
