@@ -64,27 +64,22 @@ public class KruskalGenerator implements Generator {
     }
 
     private boolean canMakePassage(int x, int y) {
-        if (root(index(x + 1, y)) == root(index(x - 1, y))) {
-            return false;
+        List<Coordinate> near = List.of(
+            new Coordinate(x + 1, y),
+            new Coordinate(x - 1, y),
+            new Coordinate(x, y + 1),
+            new Coordinate(x, y - 1)
+        );
+
+        for (int i = 0; i < near.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (root(near.get(i)) == root(near.get(j))) {
+                    return false;
+                }
+            }
         }
 
-        if (root(index(x + 1, y)) == root(index(x, y - 1))) {
-            return false;
-        }
-
-        if (root(index(x + 1, y)) == root(index(x, y + 1))) {
-            return false;
-        }
-
-        if (root(index(x - 1, y)) == root(index(x, y - 1))) {
-            return false;
-        }
-
-        if (root(index(x - 1, y)) == root(index(x, y + 1))) {
-            return false;
-        }
-
-        return root(index(x, y - 1)) != root(index(x, y + 1));
+        return true;
     }
 
     private void makePassage(int x, int y) {
@@ -110,6 +105,7 @@ public class KruskalGenerator implements Generator {
         return x * width + y;
     }
 
+    @SuppressWarnings("InnerAssignment")
     private int root(int c) {
         if (prev[c] == c) {
             return c;
@@ -118,59 +114,11 @@ public class KruskalGenerator implements Generator {
         return prev[c] = root(prev[c]);
     }
 
+    private int root(Coordinate coordinate) {
+        return root(index(coordinate.row(), coordinate.col()));
+    }
+
     private void unite(int c1, int c2) {
         prev[root(c1)] = root(c2);
     }
 }
-
-/*
-
-#########
-#########
-#########
-#########
-#########
-
-#########
-# #######
-#########
-#########
-#########
-
-#########
-# #######
-##### ###
-#########
-#########
-
-#########
-# #######
-####  ###
-#########
-#########
-
-#########
-# #######
-###   ###
-#########
-#########
-
-#########
-# #######
-# #   ###
-#########
-#########
-
-#########
-# # #####
-# #   ###
-#########
-#########
-
-#########
-#   #####
-# #   ###
-# # #####
-#########
-
- */

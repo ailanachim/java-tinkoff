@@ -45,11 +45,7 @@ public class Maze {
         int x2 = end.row();
         int y2 = end.col();
 
-        if (x1 < 0 || x1 >= height || y1 < 0 || y1 >= width) {
-            return true;
-        }
-
-        if (x2 < 0 || x2 >= height || y2 < 0 || y2 >= width) {
+        if (x1 < 0 || x1 >= height || y1 < 0 || y1 >= width || x2 < 0 || x2 >= height || y2 < 0 || y2 >= width) {
             return true;
         }
 

@@ -7,6 +7,7 @@ import java.util.Queue;
 public class BfsSolver implements Solver {
 
     Maze maze;
+
     @Override
     public SolvedMaze solve(Maze maze) {
         if (maze == null) {

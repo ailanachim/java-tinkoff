@@ -1,6 +1,10 @@
 package edu.project2;
 
 public class Main {
+    private Main() {
+    }
+
+    @SuppressWarnings({"RegexpSinglelineJava", "MagicNumber"})
     public static void main(String[] args) {
         Generator generator = new RecursiveBacktrackingGenerator();
         Maze maze = generator.generate(10, 15);
@@ -11,7 +15,6 @@ public class Main {
         Solver solver = new DfsSolver();
 
         SolvedMaze solvedMaze = solver.solve(maze);
-
 
         System.out.println(renderer.render(solvedMaze));
     }
