@@ -21,10 +21,10 @@ public class RendererTest {
 
         assertThat(renderer.render(maze)).isEqualTo(
             """
-                ███
-                \s\s\s
-                ∘█●
-                """
+                ███%s\
+                \s\s\s%s\
+                ∘█●%s\
+                """.formatted(System.lineSeparator(), System.lineSeparator(), System.lineSeparator())
         );
     }
 
@@ -48,10 +48,10 @@ public class RendererTest {
 
         assertThat(renderer.render(solvedMaze)).isEqualTo(
             """
-                ███
-                xxx
-                ∘█●
-                """
+                ███%s\
+                xxx%s\
+                ∘█●%s\
+                """.formatted(System.lineSeparator(), System.lineSeparator(), System.lineSeparator())
         );
     }
 }

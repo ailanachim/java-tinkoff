@@ -1,12 +1,11 @@
 package edu.project2;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
 public class BfsSolver implements Solver {
-
-    Maze maze;
 
     @Override
     public SolvedMaze solve(Maze maze) {
@@ -14,71 +13,59 @@ public class BfsSolver implements Solver {
             throw new IllegalArgumentException();
         }
 
-        this.maze = maze;
-
         boolean[][] used = new boolean[maze.height()][maze.width()];
         int[] prev = new int[maze.height() * maze.width()];
 
-        visit(used, prev);
+        visit(used, prev, maze);
 
-        if (prev[index(maze.end())] == 0) {
+        if (prev[index(maze.end(), maze.width())] == 0) {
             return null;
         }
 
-        List<Coordinate> path = restorePath(prev);
+        List<Coordinate> path = restorePath(prev, maze);
 
         return new SolvedMaze(maze, new Path(path));
     }
 
-    private void visit(boolean[][] used, int[] prev) {
+    private void visit(boolean[][] used, int[] prev, Maze maze) {
         Queue<Coordinate> queue = new LinkedList<>();
 
         queue.add(maze.start());
 
         while (!queue.isEmpty()) {
-            Coordinate coord = queue.poll();
-            if (coord.equals(maze.end())) {
+            Coordinate current = queue.poll();
+            if (current.equals(maze.end())) {
                 break;
             }
 
-            int x = coord.row();
-            int y = coord.col();
+            int x = current.row();
+            int y = current.col();
             used[x][y] = true;
 
-            if (maze.get(x + 1, y) == Cell.PASSAGE && !used[x + 1][y]) {
-                Coordinate next = new Coordinate(x + 1, y);
-                queue.add(next);
-                prev[index(next)] = index(coord);
-            }
+            List<Coordinate> near = Arrays.asList(
+                new Coordinate(x - 1, y),
+                new Coordinate(x + 1, y),
+                new Coordinate(x, y - 1),
+                new Coordinate(x, y + 1)
+            );
 
-            if (maze.get(x - 1, y) == Cell.PASSAGE && !used[x - 1][y]) {
-                Coordinate next = new Coordinate(x - 1, y);
-                queue.add(next);
-                prev[index(next)] = index(coord);
-            }
-
-            if (maze.get(x, y + 1) == Cell.PASSAGE && !used[x][y + 1]) {
-                Coordinate next = new Coordinate(x, y + 1);
-                queue.add(next);
-                prev[index(next)] = index(coord);
-            }
-
-            if (maze.get(x, y - 1) == Cell.PASSAGE && !used[x][y - 1]) {
-                Coordinate next = new Coordinate(x, y - 1);
-                queue.add(next);
-                prev[index(next)] = index(coord);
+            for (Coordinate next : near) {
+                if (maze.get(next) == Cell.PASSAGE && !used[next.row()][next.col()]) {
+                    queue.add(next);
+                    prev[index(next, maze.width())] = index(current, maze.width());
+                }
             }
         }
     }
 
-    private List<Coordinate> restorePath(int[] prev) {
+    private List<Coordinate> restorePath(int[] prev, Maze maze) {
         List<Coordinate> path = new LinkedList<>();
         Coordinate coord = maze.end();
 
         while (!coord.equals(maze.start())) {
             path.add(0, coord);
 
-            int index = prev[index(coord)];
+            int index = prev[index(coord, maze.width())];
             int x = index / maze.width();
             int y = index % maze.width();
             coord = new Coordinate(x, y);
@@ -89,7 +76,7 @@ public class BfsSolver implements Solver {
         return path;
     }
 
-    private int index(Coordinate coordinate) {
-        return coordinate.row() * maze.width() + coordinate.col();
+    private int index(Coordinate coordinate, int width) {
+        return coordinate.row() * width + coordinate.col();
     }
 }

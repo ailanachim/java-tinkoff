@@ -1,6 +1,13 @@
 package edu.project2;
 
 public class DefaultRenderer implements Renderer {
+
+    private static final char WALL = '█';
+    private static final char PASSAGE = ' ';
+    private static final char START = '∘';
+    private static final char END = '●';
+    private static final char PATH = 'x';
+
     @Override
     public String render(Maze maze) {
         if (maze == null) {
@@ -12,16 +19,22 @@ public class DefaultRenderer implements Renderer {
         for (int i = 0; i < maze.height(); i++) {
             for (int j = 0; j < maze.width(); j++) {
                 if (maze.get(i, j) == Cell.WALL) {
-                    stringBuilder.append('█');
+                    stringBuilder.append(WALL);
                 } else {
-                    stringBuilder.append(' ');
+                    stringBuilder.append(PASSAGE);
                 }
             }
-            stringBuilder.append('\n');
+            stringBuilder.append(System.lineSeparator());
         }
 
-        stringBuilder.setCharAt(maze.start().row() * (maze.width() + 1) + maze.start().col(), '∘');
-        stringBuilder.setCharAt(maze.end().row() * (maze.width() + 1) + maze.end().col(), '●');
+        stringBuilder.setCharAt(
+            maze.start().row() * (maze.width() + System.lineSeparator().length()) + maze.start().col(),
+            START
+        );
+        stringBuilder.setCharAt(
+            maze.end().row() * (maze.width() + System.lineSeparator().length()) + maze.end().col(),
+            END
+        );
 
         return stringBuilder.toString();
     }
@@ -37,24 +50,24 @@ public class DefaultRenderer implements Renderer {
         for (int i = 0; i < maze.height(); i++) {
             for (int j = 0; j < maze.width(); j++) {
                 if (maze.get(i, j) == Cell.WALL) {
-                    stringBuilder.append('█');
+                    stringBuilder.append(WALL);
                 } else {
-                    stringBuilder.append(' ');
+                    stringBuilder.append(PASSAGE);
                 }
             }
-            stringBuilder.append('\n');
+            stringBuilder.append(System.lineSeparator());
         }
 
         for (Coordinate coord : maze.getPath()) {
             char ch;
             if (coord.equals(maze.start())) {
-                ch = '∘';
+                ch = START;
             } else if (coord.equals(maze.end())) {
-                ch = '●';
+                ch = END;
             } else {
-                ch = 'x';
+                ch = PATH;
             }
-            stringBuilder.setCharAt(coord.row() * (maze.width() + 1) + coord.col(), ch);
+            stringBuilder.setCharAt(coord.row() * (maze.width() + System.lineSeparator().length()) + coord.col(), ch);
         }
 
         return stringBuilder.toString();

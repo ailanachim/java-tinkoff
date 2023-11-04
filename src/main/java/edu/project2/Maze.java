@@ -15,14 +15,8 @@ public class Maze {
         this.grid = grid;
     }
 
-    public Maze(Maze maze) {
-        if (maze == null) {
-            throw new IllegalArgumentException();
-        }
-
-        this.start = maze.start;
-        this.end = maze.end;
-        this.grid = maze.grid;
+    protected Maze(Maze maze) {
+        this(maze.grid, maze.start, maze.end);
     }
 
     private boolean notValidArgs(Cell[][] grid, Coordinate start, Coordinate end) {
