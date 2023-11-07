@@ -10,20 +10,24 @@ public record Animal(
     boolean bites
 ) {
     enum Type {
-        CAT, DOG, BIRD, FISH, SPIDER
+        CAT, DOG, BIRD, FISH, SPIDER;
+
+        @SuppressWarnings("MagicNumber")
+        public int paws() {
+            return switch (this) {
+                case CAT, DOG -> 4;
+                case BIRD -> 2;
+                case FISH -> 0;
+                case SPIDER -> 8;
+            };
+        }
     }
 
     enum Sex {
         M, F
     }
 
-    @SuppressWarnings("MagicNumber")
     public int paws() {
-        return switch (type) {
-            case CAT, DOG -> 4;
-            case BIRD -> 2;
-            case FISH -> 0;
-            case SPIDER -> 8;
-        };
+        return type.paws();
     }
 }
