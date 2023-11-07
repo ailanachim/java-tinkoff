@@ -269,12 +269,13 @@ public class SolutionTest {
             "   ", Set.of(new ValidationError("name is blank"))
         );
 
-        Map<String, String> result = Map.of(
-            "Murka", "age is negative, height is negative",
-            "Sharik", "",
-            "   ", "name is blank"
-        );
+        Map<String, String> result = Solution.transformErrorsToString(errors);
 
-        assertThat(Solution.transformErrorsToString(errors)).isEqualTo(result);
+        assertThat(result.get("Murka")).isIn(
+            "age is negative, height is negative",
+            "height is negative, age is negative"
+        );
+        assertThat(result.get("Sharik")).isEqualTo("");
+        assertThat(result.get("   ")).isEqualTo("name is blank");
     }
 }

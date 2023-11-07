@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 
 public class Solution {
 
+    private static final String ERROR_MESSAGE = "list is empty";
+
     private Solution() {
     }
 
@@ -39,7 +41,7 @@ public class Solution {
     public static Animal maxByNameLength(List<Animal> animals) {
         return animals.stream()
             .max(Comparator.comparing(animal -> animal.name().length()))
-            .orElseThrow(() -> new IllegalArgumentException("list is empty"));
+            .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE));
     }
 
     // task 5
@@ -49,7 +51,7 @@ public class Solution {
             .entrySet()
             .stream()
             .max(Map.Entry.comparingByValue())
-            .orElseThrow(() -> new IllegalArgumentException("list is empty"))
+            .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE))
             .getKey();
     }
 
@@ -68,7 +70,7 @@ public class Solution {
             .sorted(Comparator.comparing(Animal::age).reversed())
             .limit(k)
             .min(Comparator.comparing(Animal::age))
-            .orElseThrow(() -> new IllegalArgumentException("list is empty"));
+            .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE));
     }
 
     // task 8
