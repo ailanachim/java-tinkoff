@@ -11,28 +11,26 @@ public class Task3 {
     private Task3() {
     }
 
-    @SuppressWarnings("ReturnCount")
     public static Optional<LocalDate> parseDate(String string) {
         if (string == null) {
             return Optional.empty();
         }
 
         Optional<LocalDate> res = parseByFormat1(string);
-        if (res.isPresent()) {
-            return res;
+
+        if (res.isEmpty()) {
+            res = parseByFormat2(string);
         }
 
-        res = parseByFormat2(string);
-        if (res.isPresent()) {
-            return res;
+        if (res.isEmpty()) {
+            res = parseByFormat3(string);
         }
 
-        res = parseByFormat3(string);
-        if (res.isPresent()) {
-            return res;
+        if (res.isEmpty()) {
+            res = parseByFormat4(string);
         }
 
-        return parseByFormat4(string);
+        return res;
     }
 
     @SuppressWarnings("MagicNumber")
@@ -66,8 +64,12 @@ public class Task3 {
             int day = Integer.parseInt(result.group(1));
             int month = Integer.parseInt(result.group(2));
             int year = Integer.parseInt(result.group(3));
-            if (year < 100) {
-                year += 2000;
+
+            final int twoDigitsMaxYear = 100;
+            final int fourDigitsMinYear = 2000;
+
+            if (year < twoDigitsMaxYear) {
+                year += fourDigitsMinYear;
             }
             return Optional.of(LocalDate.of(year, month, day));
         }

@@ -8,6 +8,16 @@ import java.util.regex.Pattern;
 
 public class Task1 {
 
+    private static final String YEAR = "(\\d{4})";
+    private static final String MONTH = "((?:0[1-9])|(?:1[0-2]))";
+    private static final String DAY = "((?:(?:0[1-9])|(?:[12]\\d))|(?:3[01]))";
+    private static final String HOUR = "((?:[01]\\d)|(?:2[0-3]))";
+    private static final String MINUTE = "([0-5]\\d)";
+    private static final String DATE = "%s-%s-%s,\\s?%s:%s".formatted(YEAR, MONTH, DAY, HOUR, MINUTE);
+    private static final String REGEXP = "%s\\s*-\\s*%s".formatted(DATE, DATE);
+
+    private static final Pattern PATTERN = Pattern.compile(REGEXP);
+
     private Task1() {
     }
 
@@ -31,17 +41,7 @@ public class Task1 {
 
     @SuppressWarnings("MagicNumber")
     private static Interval parse(String interval) {
-        String year = "(\\d{4})";
-        String month = "((?:0[1-9])|(?:1[0-2]))";
-        String day = "((?:(?:0[1-9])|(?:[12]\\d))|(?:3[01]))";
-        String hour = "((?:[01]\\d)|(?:2[0-3]))";
-        String minute = "([0-5]\\d)";
-
-        String date = String.format("%s-%s-%s,\\s?%s:%s", year, month, day, hour, minute);
-        String regexp = date + "\\s*-\\s*" + date;
-
-        Pattern pattern = Pattern.compile(regexp);
-        Matcher matcher = pattern.matcher(interval);
+        Matcher matcher = PATTERN.matcher(interval);
 
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Invalid date format");

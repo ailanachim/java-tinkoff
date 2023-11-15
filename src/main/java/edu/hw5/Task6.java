@@ -14,10 +14,13 @@ public class Task6 {
         }
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(".*");
+
+        final String any = ".*";
+        stringBuilder.append(any);
+
         for (char ch : s.toCharArray()) {
             stringBuilder.append(ch);
-            stringBuilder.append(".*");
+            stringBuilder.append(any);
         }
 
         Pattern pattern = Pattern.compile(stringBuilder.toString());
