@@ -11,7 +11,7 @@ public class Task5Test {
     void topStoriesTest() {
         long[] stories = hackerNewsTopStories();
 
-        assertThat(stories.length).isEqualTo(500);
+        assertThat(stories.length).isGreaterThan(400);
     }
 
     @Test

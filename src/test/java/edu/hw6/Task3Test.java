@@ -26,9 +26,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class Task3Test {
 
     private static final Path DIR = Path.of("src/test/java/edu/hw6/test_files");
-    private static final Path EXECUTABLE = Path.of("src/test/java/edu/hw6/test_files/alg.exe");
-    private static final Path PICTURE = Path.of("src/test/java/edu/hw6/test_files/bird.png");
-    private static final Path TEXT_FILE = Path.of("src/test/java/edu/hw6/test_files/example_text.txt");
+    private static final Path EXECUTABLE =
+        Path.of("src/test/java/edu/hw6/test_files/alg.exe".replace("/", File.separator));
+    private static final Path PICTURE =
+        Path.of("src/test/java/edu/hw6/test_files/bird.png".replace("/", File.separator));
+    private static final Path TEXT_FILE =
+        Path.of("src/test/java/edu/hw6/test_files/example_text.txt".replace("/", File.separator));
 
     static Arguments[] filters() {
         File file1 = EXECUTABLE.toFile();

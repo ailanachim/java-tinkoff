@@ -52,7 +52,7 @@ public interface AbstractFilter extends DirectoryStream.Filter<Path> {
 
     static AbstractFilter globMatches(String glob) {
         return entry -> {
-            FileSystem fs = FileSystems.getDefault();
+            FileSystem fs = entry.getFileSystem();
             final PathMatcher matcher = fs.getPathMatcher("glob:" + glob);
             return matcher.matches(entry.getFileName());
         };
