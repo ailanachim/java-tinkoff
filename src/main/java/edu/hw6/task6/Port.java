@@ -1,6 +1,7 @@
 package edu.hw6.task6;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.ServerSocket;
 
 public class Port {
@@ -20,10 +21,18 @@ public class Port {
     }
 
     public boolean isUsed() {
-        try (ServerSocket socket = new ServerSocket(port)) {
-            return false;
-        } catch (IOException e) {
-            return true;
+        if (protocol == Protocol.TCP) {
+            try (var socket = new ServerSocket(port)) {
+                return false;
+            } catch (IOException e) {
+                return true;
+            }
+        } else {
+            try (var socket = new DatagramSocket(port)) {
+                return false;
+            } catch (IOException e) {
+                return true;
+            }
         }
     }
 

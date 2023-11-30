@@ -1,8 +1,10 @@
 package edu.hw6.task1;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Scanner;
@@ -16,36 +18,17 @@ import org.jetbrains.annotations.Nullable;
 public class DiskMap implements Map<String, String> {
 
     private final Map<String, String> map;
+    private Path path;
 
-    public DiskMap(Map<String, String> map) {
+    public DiskMap(Map<String, String> map, Path path) throws IOException {
         this.map = map;
-    }
+        this.path = path;
 
-    public void saveToFile(OutputStream outputStream) throws IOException {
-        for (Entry<String, String> pair : map.entrySet()) {
-            String output =
-                "\"%s\":\"%s\"%s".formatted(pair.getKey(), pair.getValue(), System.lineSeparator());
-            outputStream.write(output.getBytes());
-        }
-    }
-
-    public void loadFromFile(InputStream inputStream) {
-        Scanner scanner = new Scanner(inputStream);
-
-        while (scanner.hasNext()) {
-            String input = scanner.nextLine();
-            Pattern pattern = Pattern.compile("\"(.*)\":\"(.*)\"");
-            Matcher matcher = pattern.matcher(input);
-
-            if (!matcher.matches()) {
-                throw new IllegalStateException("Invalid file format");
-            }
-
-            MatchResult result = matcher.toMatchResult();
-            String key = result.group(1);
-            String value = result.group(2);
-
-            put(key, value);
+        File file = path.toFile();
+        if (!file.exists()) {
+            this.path = Files.createFile(path);
+        } else {
+            loadFromFile();
         }
     }
 
@@ -77,22 +60,28 @@ public class DiskMap implements Map<String, String> {
     @Nullable
     @Override
     public String put(String key, String value) {
-        return map.put(key, value);
+        var res = map.put(key, value);
+        saveToFile();
+        return res;
     }
 
     @Override
     public String remove(Object key) {
-        return map.remove(key);
+        var res = map.remove(key);
+        saveToFile();
+        return res;
     }
 
     @Override
     public void putAll(@NotNull Map<? extends String, ? extends String> m) {
         map.putAll(m);
+        saveToFile();
     }
 
     @Override
     public void clear() {
         map.clear();
+        saveToFile();
     }
 
     @NotNull
@@ -111,5 +100,41 @@ public class DiskMap implements Map<String, String> {
     @Override
     public Set<Entry<String, String>> entrySet() {
         return map.entrySet();
+    }
+
+    private void saveToFile() {
+        try (OutputStream outputStream = Files.newOutputStream(path)) {
+            for (Entry<String, String> pair : map.entrySet()) {
+                String output =
+                    "\"%s\":\"%s\"%s".formatted(pair.getKey(), pair.getValue(), System.lineSeparator());
+                outputStream.write(output.getBytes());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void loadFromFile() {
+        try (var inputStream = Files.newInputStream(path)) {
+            Scanner scanner = new Scanner(inputStream);
+
+            while (scanner.hasNext()) {
+                String input = scanner.nextLine();
+                Pattern pattern = Pattern.compile("\"(.*)\":\"(.*)\"");
+                Matcher matcher = pattern.matcher(input);
+
+                if (!matcher.matches()) {
+                    throw new IllegalStateException("Invalid file format");
+                }
+
+                MatchResult result = matcher.toMatchResult();
+                String key = result.group(1);
+                String value = result.group(2);
+
+                put(key, value);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
