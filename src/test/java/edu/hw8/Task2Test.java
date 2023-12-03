@@ -7,17 +7,18 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class Task2Test {
 
     @Test
-    void test() throws InterruptedException {
-        assertThat(new FiboCalculator(4).calculate(0)).isEqualTo(1);
-        assertThat(new FiboCalculator(4).calculate(1)).isEqualTo(1);
-        assertThat(new FiboCalculator(4).calculate(2)).isEqualTo(2);
-        assertThat(new FiboCalculator(4).calculate(3)).isEqualTo(3);
-        assertThat(new FiboCalculator(4).calculate(4)).isEqualTo(5);
-        assertThat(new FiboCalculator(4).calculate(5)).isEqualTo(8);
-        assertThat(new FiboCalculator(4).calculate(6)).isEqualTo(13);
-        assertThat(new FiboCalculator(4).calculate(7)).isEqualTo(21);
-        assertThat(new FiboCalculator(4).calculate(8)).isEqualTo(34);
-        assertThat(new FiboCalculator(4).calculate(9)).isEqualTo(55);
-        assertThat(new FiboCalculator(4).calculate(10)).isEqualTo(89);
+    void test() throws Exception {
+        FiboCalculator calculator = new FiboCalculator();
+        assertThat(calculator.calculate(0, 4)).isEqualTo(1);
+        assertThat(calculator.calculate(1, 4)).isEqualTo(1);
+        assertThat(calculator.calculate(2, 4)).isEqualTo(2);
+        assertThat(calculator.calculate(3, 4)).isEqualTo(3);
+        assertThat(calculator.calculate(4, 4)).isEqualTo(5);
+        assertThat(calculator.calculate(5, 4)).isEqualTo(8);
+        assertThat(calculator.calculate(6, 4)).isEqualTo(13);
+        assertThat(calculator.calculate(7, 4)).isEqualTo(21);
+        assertThat(calculator.calculate(8, 4)).isEqualTo(34);
+        assertThat(calculator.calculate(9, 4)).isEqualTo(55);
+        assertThat(calculator.calculate(10, 4)).isEqualTo(89);
     }
 }
