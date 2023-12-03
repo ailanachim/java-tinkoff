@@ -7,7 +7,7 @@ public class FixedThreadPool implements ThreadPool {
 
     private final Worker[] threads;
     private final Queue<Runnable> queue = new LinkedList<>();
-    private boolean isWorking;
+    private volatile boolean isWorking;
 
     public FixedThreadPool(int threadsCount) {
         threads = new Worker[threadsCount];
