@@ -24,7 +24,7 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try (ServerSocket socket = new ServerSocket(port)) {
-            final int waitingTime = 3000;
+            final int waitingTime = 1000;
             socket.setSoTimeout(waitingTime);
 
             while (!socket.isClosed()) {
