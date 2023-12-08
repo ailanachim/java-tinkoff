@@ -9,7 +9,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class Task3Test {
 
     @Test
-    void test() throws NoSuchAlgorithmException {
+    void hackerTest() throws NoSuchAlgorithmException {
         String[] data = new String[] {
             "a.v.petrov  cd0acfe085eeb0f874391fb9b8009bed",
             "v.v.belov  81dc9bdb52d04dc20036dbd8313ed055",
@@ -27,7 +27,7 @@ public class Task3Test {
     }
 
     @Test
-    void multiThreadTest() throws NoSuchAlgorithmException {
+    void multiThreadHackerTest() throws NoSuchAlgorithmException {
         String[] data = new String[] {
             "a.v.petrov  cd0acfe085eeb0f874391fb9b8009bed",
             "v.v.belov  81dc9bdb52d04dc20036dbd8313ed055",

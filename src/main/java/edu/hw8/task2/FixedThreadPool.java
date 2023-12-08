@@ -1,13 +1,12 @@
 package edu.hw8.task2;
 
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class FixedThreadPool implements ThreadPool {
 
     private final Worker[] threads;
-    private final Queue<Runnable> queue = new LinkedList<>();
-    private volatile boolean isWorking;
+    private final Queue<Runnable> queue = new LinkedBlockingQueue<>();
 
     public FixedThreadPool(int threadsCount) {
         threads = new Worker[threadsCount];
@@ -18,8 +17,6 @@ public class FixedThreadPool implements ThreadPool {
 
     @Override
     public void start() {
-        isWorking = true;
-
         for (var thread : threads) {
             thread.start();
         }
@@ -30,15 +27,14 @@ public class FixedThreadPool implements ThreadPool {
         if (runnable == null) {
             throw new IllegalArgumentException();
         }
-
-        synchronized (queue) {
-            queue.add(runnable);
-        }
+        queue.add(runnable);
     }
 
     @Override
     public void close() throws InterruptedException {
-        isWorking = false;
+        for (var thread : threads) {
+            thread.interrupt();
+        }
 
         for (var thread : threads) {
             thread.join();
@@ -49,15 +45,8 @@ public class FixedThreadPool implements ThreadPool {
 
         @Override
         public void run() {
-            Runnable task;
-
-            while (isWorking || !queue.isEmpty()) {
-                if (queue.isEmpty()) {
-                    continue;
-                }
-                synchronized (queue) {
-                    task = queue.poll();
-                }
+            while (!isInterrupted() || !queue.isEmpty()) {
+                Runnable task = queue.poll();
                 if (task != null) {
                     task.run();
                 }

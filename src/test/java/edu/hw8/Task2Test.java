@@ -7,7 +7,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class Task2Test {
 
     @Test
-    void test() throws Exception {
+    void fiboCalculatorTest() throws Exception {
         FiboCalculator calculator = new FiboCalculator();
         assertThat(calculator.calculate(0, 4)).isEqualTo(1);
         assertThat(calculator.calculate(1, 4)).isEqualTo(1);

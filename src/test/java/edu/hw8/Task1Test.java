@@ -15,7 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class Task1Test {
 
     @Test
-    void test() throws InterruptedException {
+    void serverTest() throws InterruptedException {
         Map<String, String> map = Map.of("личности", "Не переходи на личности там, где их нет");
         Dictionary phrases = new Dictionary(map);
 
