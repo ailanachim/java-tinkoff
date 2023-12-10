@@ -33,4 +33,16 @@ public class LinearTransformer implements Transformer {
 
         return new Pixel(new Point(x, y), color);
     }
+
+    public static LinearTransformer getRandom() {
+        return new LinearTransformer(
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1,
+            Color.getRandomColor()
+        );
+    }
 }

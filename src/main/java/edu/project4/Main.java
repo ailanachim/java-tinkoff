@@ -3,53 +3,110 @@ package edu.project4;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.imageio.ImageIO;
 
 public class Main {
 
+    private Main() {
+    }
+
     public static void main(String[] args) throws IOException {
-        int width = 1080;
-        int height = 720;
-        int n = 10;
-        int it = 20;
+        // parameters
+        final int width = 1080;
+        final int height = 720;
+        final int points = 1000;
+        final int it = 500;
+        final int startIt = 20;
+        final int transformCount = 5;
+        final int threads = 4;
+        final double gamma = 2.2;
 
-        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        LinearTransformer[] linears = new LinearTransformer[transformCount];
+        for (int i = 0; i < linears.length; i++) {
+            linears[i] = LinearTransformer.getRandom();
+        }
 
-        var affine1 = new LinearTransformer(0.8, -0.5, 0, 0.8, 0.5, 0.5, new edu.project4.Color(0.8, 0.7, 0.9));
-        var affine2 = new LinearTransformer(0.6, 0.2, 0.3, 0.4, 0.5, 0.1, new edu.project4.Color(0.6, 0.3, 0.5));
-        var affine3 = new LinearTransformer(-0.6, 0.4, 0.36, -0.2, 0.5, -0.4, new edu.project4.Color(0.9, 0.5, 0.9));
-        var affine4 = new LinearTransformer(0.43, 0.42, 0.07, 0.27, 0.46, 0.6, new edu.project4.Color(0.6, 0.8, 0.2));
-        var affine5 = new LinearTransformer(0.86, 0.4, 0.05, 0.4, 0.38, 0.27, new edu.project4.Color(0.1, 0.5, 1));
-        var affine6 = new LinearTransformer(0.88, 0.6, -0.3, 0.75, 0.6, -0.2, new edu.project4.Color(1, 1, 0.2));
+//        var finalTransform = new SinTransformer();
+//        var finalTransform = new SphericalTransformer();
+        var finalTransform = new HeartTransformer();
+//        var finalTransform = new DiscTransformer();
 
-        Transformer[] linears = new Transformer[] {affine1, affine2, affine3, affine4, affine5, affine6};
+        // generation
+        List<Pixel> pixels = Collections.synchronizedList(new ArrayList<>(it * points));
 
-        var sinus = new SinTransformer();
-        var heart = new HeartTransformer();
+        try (ExecutorService executor = Executors.newFixedThreadPool(threads)) {
+            for (int j = 0; j < points; j++) {
+                executor.execute(() -> {
+                    ThreadLocalRandom random = ThreadLocalRandom.current();
+                    int k = random.nextInt(linears.length);
+                    Pixel pixel = new Pixel(Point.getRandomPoint(random), linears[k].coef);
 
-        for (int j = 0; j < 1000000; j++) {
-            Pixel pixel = new Pixel(Point.getRandomPoint(), edu.project4.Color.getRandomColor());
+                    for (int i = -startIt; i < it; i++) {
+                        k = random.nextInt(linears.length);
+                        pixel = linears[k].transform(pixel);
 
-            for (int i = -it; i < n; i++) {
-                int k = (int) (Math.random() * linears.length);
-                pixel = linears[k].transform(pixel);
-
-                if (i >= 0) {
-
-                    Pixel rendered = heart.transform(pixel);
-
-                    if (Math.abs(rendered.point().x()) < 1 && Math.abs(rendered.point().y()) < 1) {
-                        bi.setRGB(
-                            rendered.point().getNormalX(width),
-                            rendered.point().getNormalY(height),
-                            rendered.color().getRgb()
-                        );
+                        if (i >= 0) {
+                            Pixel rendered = finalTransform.transform(pixel);
+                            if (Math.abs(rendered.point().x()) < 1 && Math.abs(rendered.point().y()) < 1) {
+                                pixels.add(rendered);
+                            }
+                        }
                     }
-                }
+                });
             }
         }
 
-        ImageIO.write(bi, "PNG", new File("my_picture.png"));
+        // correction
+        int[][] counter = new int[width][height];
+        final AtomicInteger max = new AtomicInteger();
+
+        try (ExecutorService executor = Executors.newFixedThreadPool(threads)) {
+            for (int i = 0; i < threads; i++) {
+                int finalI = i;
+                executor.execute(() -> {
+                    int offset = finalI * pixels.size() / threads;
+                    for (int j = 0; j < pixels.size() / threads; j++) {
+                        Pixel pixel = pixels.get(j + offset);
+                        int x = pixel.point().getNormalX(width);
+                        int y = pixel.point().getNormalY(height);
+                        counter[x][y]++;
+
+                        if (counter[x][y] > max.get()) {
+                            max.set(counter[x][y]);
+                        }
+                    }
+                });
+            }
+
+            for (int i = 0; i < threads; i++) {
+                int finalI = i;
+                executor.execute(() -> {
+                    int offset = finalI * pixels.size() / threads;
+                    for (int j = 0; j < pixels.size() / threads; j++) {
+                        Pixel pixel = pixels.get(j + offset);
+                        int x = pixel.point().getNormalX(width);
+                        int y = pixel.point().getNormalY(height);
+                        pixel.color().gammaCorrect(counter[x][y], max.get(), gamma);
+                    }
+                });
+            }
+        }
+
+        // rendering
+        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        for (var pixel : pixels) {
+            bi.setRGB(pixel.point().getNormalX(width), pixel.point().getNormalY(height), pixel.color().getRgb());
+        }
+
+        ImageIO.write(bi, "PNG", new File("frame.png"));
     }
 
 }
