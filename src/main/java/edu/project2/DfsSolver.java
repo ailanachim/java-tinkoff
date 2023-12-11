@@ -26,7 +26,7 @@ public class DfsSolver implements Solver {
         return new SolvedMaze(maze, new Path(path));
     }
 
-    private void visit(Coordinate current, boolean[][] used, int[] prev, Maze maze) {
+    protected void visit(Coordinate current, boolean[][] used, int[] prev, Maze maze) {
         if (current.equals(maze.end())) {
             return;
         }
@@ -51,7 +51,7 @@ public class DfsSolver implements Solver {
         }
     }
 
-    private List<Coordinate> restorePath(int[] prev, Maze maze) {
+    protected List<Coordinate> restorePath(int[] prev, Maze maze) {
         List<Coordinate> path = new LinkedList<>();
         Coordinate coord = maze.end();
 
@@ -69,7 +69,7 @@ public class DfsSolver implements Solver {
         return path;
     }
 
-    private int index(Coordinate coordinate, int width) {
+    protected int index(Coordinate coordinate, int width) {
         return coordinate.row() * width + coordinate.col();
     }
 }
